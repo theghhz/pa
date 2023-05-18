@@ -3,28 +3,30 @@
 #include <sstream>
 #include <vector>
 #include <map>
+#include <iomanip> // Adicionado para usar std::setw
 
 using namespace std;
 
-// Definição da estrutura Registro
 struct Registro {
     string data;
     map<string, int> ocorrencias;
 };
 
-// Definição da estrutura Ocorrencia
-struct Ocorrencia {
-    string crianca;
-    vector<string> datas;
-    vector<int> quantidades;
-};
-
 void lerArquivoCSV(string nomeArquivo, map<string, vector<Registro>>& registros) {
+    if (nomeArquivo.find(".csv") == string::npos) {
+        nomeArquivo += ".csv";
+    }
+
     ifstream arquivo(nomeArquivo);
+
     if (!arquivo.is_open()) {
         cerr << "Erro ao abrir o arquivo " << nomeArquivo << endl;
         return;
     }
+
+    // Extrair a data do nome do arquivo
+    size_t pos = nomeArquivo.find_last_of("/");
+    string dataArquivo = nomeArquivo.substr(pos + 1, 8); // Assume que o formato do nome do arquivo é DDMMYYYY
 
     string linha;
     while (getline(arquivo, linha)) {
@@ -33,25 +35,21 @@ void lerArquivoCSV(string nomeArquivo, map<string, vector<Registro>>& registros)
         string nome;
         getline(ss, nome, ',');
         Registro registro;
+        registro.data = dataArquivo;
         string chave;
-        int valor; // Adicionado
-        string entrada;
-         while (getline(ss, chave, ',')) {
-            if (!getline(ss, entrada, ',')) {
-             break;
+        string valor;
+        while (getline(ss, chave, ',')) {
+            if (!getline(ss, valor, ',')) {
+                break;
             }
-        stringstream ssEntrada(entrada);
-        ssEntrada >> valor;
-        registro.ocorrencias[chave] = valor;
-}
+            registro.ocorrencias[chave] = stoi(valor);
+        }
         registros[nome].push_back(registro);
     }
 
     cout << "Arquivo " << nomeArquivo << " lido com sucesso." << endl;
 }
 
-
-// Função para gerar relatório por criança
 void gerarRelatorioPorCrianca(map<string, vector<Registro>>& registros) {
     string nome;
     cout << "Digite o nome da criança: ";
@@ -60,22 +58,23 @@ void gerarRelatorioPorCrianca(map<string, vector<Registro>>& registros) {
 
     auto it = registros.find(nome);
     if (it == registros.end()) {
-        cout << "Crianca não encontrada." << endl;
+        cout << "Criança não encontrada." << endl;
         return;
     }
 
     vector<Registro>& registrosCrianca = it->second;
-    cout << "Relatorio para a crianca " << nome << ":";
+    cout << "Relatório para a criança " << nome << ":" << endl;
     for (const Registro& registro : registrosCrianca) {
-        cout << registro.data << ": ";
+        // Formatar a data como DD/MM/YYYY
+        string dataFormatada = registro.data.substr(0, 2) + "/" + registro.data.substr(2, 2) + "/" + registro.data.substr(4, 4);
+        cout << "Data: " << dataFormatada << endl << endl;
         for (const auto& ocorrencia : registro.ocorrencias) {
-            cout << ocorrencia.first << "=" << ocorrencia.second << " ";
+            cout << "  - " << ocorrencia.first << ": " << ocorrencia.second << endl;
         }
         cout << endl;
     }
 }
 
-// IMPRIMIR REGISTROS
 
 void imprimirRegistros(const map<string, vector<Registro>>& registros) {
     for (const auto& par : registros) {
@@ -84,11 +83,12 @@ void imprimirRegistros(const map<string, vector<Registro>>& registros) {
 
         cout << "Registros de " << nome << ":" << endl;
         for (const Registro& registro : listaRegistros) {
-            cout << "- Data: " << registro.data << endl;
+            // Formatar a data como DD/MM/YYYY
+            string dataFormatada = registro.data.substr(0, 2) + "/" + registro.data.substr(2, 2) + "/" + registro.data.substr(4, 4);
+            cout << "- Data: " << dataFormatada << endl;
             for (const auto& parOcorrencia : registro.ocorrencias) {
                 const string& chave = parOcorrencia.first;
-                int valor = parOcorrencia.second;
-                cout << "  - " << chave << ": " << valor << endl;
+                cout << "  - " << chave << endl;
             }
         }
         cout << endl;
@@ -96,15 +96,49 @@ void imprimirRegistros(const map<string, vector<Registro>>& registros) {
 }
 
 int main() {
+    int ver, op = 9, check;
     map<string, vector<Registro>> registros;
-    
     string nomeArquivo;
 
-    cout << "Digite o nome do arquivo a ser lido: ";
-    cin >> nomeArquivo;
+    do {
+        cout << "ESCOLHA A OPÇÃO ABAIXO:\n[1]LER ARQUIVO\n[2]GERAR RELATÓRIO POR CRIANÇA\n[3]GERAR RELATÓRIO POR QUESITO\n[0]SAIR\n[->]";
+        cin >> op;
 
-    lerArquivoCSV(nomeArquivo , registros);
-    imprimirRegistros(registros);
-    gerarRelatorioPorCrianca(registros);
+        switch(op) {
+            case 1:
+                cout << "Digite o nome do arquivo a ser lido: ";
+                cin >> nomeArquivo;
+                lerArquivoCSV(nomeArquivo, registros);
+                op = 8;
+                break;
+            case 2:
+                gerarRelatorioPorCrianca(registros);
+                break;
+            case 3:
+                {
+                    op = 8;
+                    cout << "ESCOLHA A OPÇÃO PARA GERAR O RELATÓRIO:\n[1]Drible\n[2]Assistência\n[3]Gol\n[4]Cartões\n[->]";
+                    cin >> op;
+                    switch(op) {
+                        case 1:
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            break;
+                        case 4:
+                            break;
+                    }
+                    break;
+                }
+            case 0:
+                break;
+            default:
+                cout << "\nOPÇÃO INVÁLIDA\n";
+                op = 8;
+                break;
+        }
+    } while(op != 0);
+
     return 0;
 }

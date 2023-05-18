@@ -74,7 +74,78 @@ void gerarRelatorioPorCrianca(map<string, vector<Registro>>& registros) {
         cout << endl;
     }
 }
+void gerarRelatorioGeral(const map<string, vector<Registro>>& registros, int op) {
 
+    string quesito;
+
+    switch(op){
+        case 1:
+          quesito = "penalti";
+          break;
+        case 2:
+          quesito = "falta";
+          break;
+        case 3:
+          quesito = "escanteio";
+          break;
+        case 4:
+          quesito = "gol";
+          break;
+        case 5:
+          quesito = "cruzamento";
+          break;
+        case 6:
+          quesito = "cartao amarelo";
+          break;
+        case 7:
+          quesito = "cartao vermelho";
+          break;
+        case 8:
+          quesito = "drible";
+          break;
+        case 9:
+          quesito = "desarme";
+          break;
+        case 10:
+          quesito = "cabeceio";
+          break;
+        case 11: 
+          quesito = "assistencia";
+          break;
+    }
+    cout << "Relatório de " + quesito + " por criança:" << endl;
+
+    bool encontrado = false; // Verificar se há registros do quesito escolhido para alguma criança
+
+    for (const auto& par : registros) {
+        const string& nome = par.first;
+        const vector<Registro>& registrosCrianca = par.second;
+
+        for (const Registro& registro : registrosCrianca) {
+            auto itQuesito = registro.ocorrencias.find(quesito);
+            if (itQuesito != registro.ocorrencias.end()) {
+                if (!encontrado) {
+                    encontrado = true;
+                }
+
+                // Formatar a data como DD/MM/YYYY
+                string dataFormatada = registro.data.substr(0, 2) + "/" + registro.data.substr(2, 2) + "/" + registro.data.substr(4, 4);
+                cout << "Criança: " << nome << endl;
+                cout << "Data: " << dataFormatada << endl;
+                cout << "  - " + quesito + ": " << itQuesito->second << endl;
+                cout << endl;
+            }
+        }
+    }
+
+    if (!encontrado) {
+        cout << "Não foram encontrados registros de " + quesito + " para nenhuma criança." << endl;
+    }
+}
+
+void gerarRelatorioPorDrible(const map<string, vector<Registro>>& registros) {
+
+}
 
 void imprimirRegistros(const map<string, vector<Registro>>& registros) {
     for (const auto& par : registros) {
@@ -117,19 +188,9 @@ int main() {
             case 3:
                 {
                     op = 8;
-                    cout << "ESCOLHA A OPÇÃO PARA GERAR O RELATÓRIO:\n[1]Drible\n[2]Assistência\n[3]Gol\n[4]Cartões\n[->]";
+                    cout << "ESCOLHA A OPÇÃO PARA GERAR O RELATÓRIO:\n[1]penalti [2]falta [3]escanteio [4]gol [5] cruzamento [6]cartao armarelo [7] cartao vermelho [8]drible [9]desarme [10]cabeceio [11] assistencia \n[->]";
                     cin >> op;
-                    switch(op) {
-                        case 1:
-                            break;
-                        case 2:
-                            break;
-                        case 3:
-                            break;
-                        case 4:
-                            break;
-                    }
-                    break;
+                    gerarRelatorioGeral(registros, op);
                 }
             case 0:
                 break;

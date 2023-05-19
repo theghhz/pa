@@ -172,7 +172,7 @@ int main() {
     string nomeArquivo;
 
     do {
-        cout << "ESCOLHA A OPÇÃO ABAIXO:\n[1]LER ARQUIVO\n[2]GERAR RELATÓRIO POR CRIANÇA\n[3]GERAR RELATÓRIO POR QUESITO\n[0]SAIR\n[->]";
+        cout << "ESCOLHA A OPÇÃO ABAIXO:\n[1]Ler Arquivos\n[2]Gerar relatório por criança\n[3]Gerar relatório por quesito\n[0]Sair do programa\n[->]";
         cin >> op;
 
         switch(op) {
@@ -188,7 +188,7 @@ int main() {
             case 3:
                 {
                     op = 8;
-                    cout << "ESCOLHA A OPÇÃO PARA GERAR O RELATÓRIO:\n[1]penalti [2]falta [3]escanteio [4]gol [5] cruzamento [6]cartao armarelo [7] cartao vermelho [8]drible [9]desarme [10]cabeceio [11] assistencia \n[->]";
+                    cout << "ESCOLHA A OPÇÃO PARA GERAR O RELATÓRIO:\n[1]Penalti\n[2]Falta\n[3]Escanteio\n[4]Gol\n[5]Cruzamento\n[6]Cartão amarelo\n[7]Cartão Vermelho\n[8]Drible\n[9]Desarme\n[10]Cabeceio\n[11]Assistência\n[->]";
                     cin >> op;
                     gerarRelatorioGeral(registros, op);
                 }
